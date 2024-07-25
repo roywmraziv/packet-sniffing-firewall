@@ -1,13 +1,16 @@
-from scapy.all import sniff, IP
+from scapy.all import sniff, IP, TCP
 
 # list of IPs to block/sniff
 blocked_ips = ['192.168.1.75']
 
 def packet_callback(packet):
     # check if hte packet has an IP layer
-    if IP in packet:
+    if 'IP' in packet and 'TCP' in packet:
         src_ip = packet[IP].src
         dst_ip = packet[IP].dst
+        src_port = packet[TCP].sport
+        dst_port = packet[TCP].dport
+        tcp_payload = packet.tcp.payload 
 
         # check if the source or destination IP is in the blocked list
         if src_ip in blocked_ips or dst_ip in blocked_ips:
